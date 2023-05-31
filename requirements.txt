@@ -1,0 +1,12 @@
+ipympl
+ipywidgets
+jupyterhub
+jupyterlab
+matplotlib
+networkx
+notebook
+numpy
+pandas
+scipy
+scikit-learn
+seaborn

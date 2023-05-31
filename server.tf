@@ -65,7 +65,7 @@ resource "aws_instance" "hub" {
     encrypted   = true
   }
   user_data_replace_on_change = true
-  user_data = templatefile("${path.module}/simple.sh",
+  user_data = templatefile("${path.module}/provision.sh",
     {
       domain      = var.domain,
       admin_email = var.admin_email

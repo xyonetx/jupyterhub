@@ -20,6 +20,7 @@ apt install -y --no-install-recommends \
   libcairo2-dev \
   python3-dev \
   python3-pip \
+  python3-venv \
   pkg-config \
   libjpeg-turbo8-dev \
   libblas-dev \
@@ -38,11 +39,12 @@ git clone https://github.com/xyonetx/jupyterhub
 
 # move into the cloned repo dir:
 cd /opt/jupyterhub
-pip3 install -U pip
-pip3 install --no-cache-dir -r ./requirements.txt
+/usr/bin/python3 -m venv ./venv
+#pip3 install -U pip
+/opt/jupyterhub/venv/bin/pip3 install --no-cache-dir -r ./requirements.txt
 
 # The following allows dynamic 3-d plotting
-curl -sL https://deb.nodesource.com/setup_18.x | /usr/bin/bash -
+curl -sL https://deb.nodesource.com/setup_20.x | /usr/bin/bash -
 apt-get install -y nodejs
 
 npm install -g configurable-http-proxy
@@ -50,11 +52,12 @@ npm install -g configurable-http-proxy
 cd /opt
 mkdir -p /opt/jupyterhub_config/etc/jupyterhub
 cd /opt/jupyterhub_config/etc/jupyterhub
-/usr/local/bin/jupyterhub --generate-config
+/opt/jupyterhub/venv/bin/jupyterhub --generate-config
 
 # Edit the jupyterhub config file:
 sed -i "s?^# c.JupyterHub.bind_url = 'http://:8000'?c.JupyterHub.bind_url = 'http://:8000/jupyter'?g" /opt/jupyterhub_config/etc/jupyterhub/jupyterhub_config.py
 sed -i "s?^# c.Spawner.default_url = ''?c.Spawner.default_url = '/lab'?g" /opt/jupyterhub_config/etc/jupyterhub/jupyterhub_config.py
+sed -i "s?^# c.Authenticator.allow_all = False?c.Authenticator.allow_all = True?g" /opt/jupyterhub_config/etc/jupyterhub/jupyterhub_config.py
 
 # Setup jupyterhub as a service
 mkdir -p /opt/jupyterhub_config/etc/systemd
@@ -65,8 +68,8 @@ After=syslog.target network.target
 
 [Service]
 User=root
-Environment="PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
-ExecStart=/usr/local/bin/jupyterhub -f /opt/jupyterhub_config/etc/jupyterhub/jupyterhub_config.py
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/opt/jupyterhub/venv/bin"
+ExecStart=/opt/jupyterhub/venv/bin/jupyterhub -f /opt/jupyterhub_config/etc/jupyterhub/jupyterhub_config.py
 
 [Install]
 WantedBy=multi-user.target

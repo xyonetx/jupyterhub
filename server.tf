@@ -50,8 +50,8 @@ resource "aws_eip_association" "ip_assoc" {
 
 resource "aws_instance" "hub" {
 
-  # Ubuntu 22.04 LTS https://cloud-images.ubuntu.com/locator/ec2/
-  ami                    = "ami-024e6efaf93d85776"
+  # Ubuntu 24.04 LTS https://cloud-images.ubuntu.com/locator/ec2/
+  ami                    = "ami-0b764103c341230da"
   instance_type          = "m5.xlarge"
   monitoring             = true
   subnet_id              = aws_subnet.public.id
@@ -61,7 +61,7 @@ resource "aws_instance" "hub" {
 
   root_block_device {
     volume_type = "gp3"
-    volume_size = 64
+    volume_size = 128
     encrypted   = true
   }
   user_data_replace_on_change = true
